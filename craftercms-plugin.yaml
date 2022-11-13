@@ -1,0 +1,83 @@
+# This file describes a plugin for use in CrafterCMS
+
+# The version of the format for this file
+descriptorVersion: 2
+
+# Describe the plugin
+plugin:
+  type: site
+  id: org.rd.plugin.googleoptimize
+  name: Google Optimize
+  tags:
+    - marketing
+    - content management
+    - AB testing
+    - Multi-variant testing
+    - Personalization
+  version:
+    major: 1
+    minor: 0
+    patch: 0
+  description: A plugin to provide easy access to your Google Optimize rules from within Studio
+  documentation: "https://raw.githubusercontent.com/russdanner/plugin-craftercms-googleoptimize/master/README.md"
+  website:
+    name: Google Optimize
+    url: https://github.com/russdanner/plugin-craftercms-googleoptimize
+  media:
+    screenshots:
+      - title: CrafterCMS
+        description: CrafterCMS Plugin for Google Optimze
+        url: "https://raw.githubusercontent.com/russdanner/plugin-craftercms-googleoptimize/master/.crafter/logo.png"
+  developer:
+    company:
+      name: Russ Danner
+      email: russdanner@craftercms.com
+      url: https://github.com/russdanner
+  build:
+    id: cafebabe313000725e0481d6ba87901d0b02716c9
+    date: 2022-11-11T00:00:00Z
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  crafterCmsVersions:
+    - major: 4
+      minor: 0
+      patch: 0
+    - major: 4
+      minor: 0
+      patch: 1
+    - major: 4
+      minor: 0
+      patch: 2
+    - major: 4
+      minor: 0
+      patch: 3
+  crafterCmsEditions:
+    - community
+    - enterprise
+  parameters:
+    - label: Google API Key
+      name: googleApiToken
+      description: Google API Token
+  installation:
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.googleoptimize.optimizeToolbarStatus']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/middleSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.googleoptimize.optimizeToolbarStatus
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.googleoptimize
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: googleoptimize
+              - name: file
+                value: index.js

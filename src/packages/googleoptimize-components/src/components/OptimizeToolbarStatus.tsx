@@ -61,11 +61,12 @@ export function OptimizeToolbarStatus(props) {
 
         Object.values(configuredExperiments).map((exp, idx) => {
           // @ts-ignore
-          if (exp.url === pageUrl) {
+
+          if (exp.url === pageUrl.split('?')[0]) {
             pageExperiments.push(exp);
           } else {
             // @ts-ignore
-            console.log('pageUrl ' + pageUrl + ' != ' + exp.url);
+            console.log('pageUrl ' + pageUrl.split('?')[0] + ' != ' + exp.url);
           }
         });
 
@@ -97,17 +98,32 @@ export function OptimizeToolbarStatus(props) {
     setAnchorEl(null);
   };
 
-  function renderVariantMenuItems(experiment) {
+  function renderVariantRow(variant) {
     let curUri = window.location.href;
+
+    if (curUri.indexOf(variant.params) != -1) {
+      return (
+        <>
+          <ListItemIcon>
+            <CheckRoundedIcon />
+          </ListItemIcon>{variant.label}
+        </>
+      );
+    } else {
+      return <ListItemText inset>{variant.label}</ListItemText>;
+    }
+  }
+
+  function renderVariantMenuItems(experiment) {
     return (
       <>
         {experiment.variants?.map((variant, idx) => (
           <MenuItem
             onClick={() => {
-              dispatch(changeCurrentUrl(internalUrl + "?" + variant.params));
+              dispatch(changeCurrentUrl(internalUrl.split("?")[0] + '?' + variant.params));
             }}
           >
-            <ListItemText inset>{variant.label}</ListItemText>
+            {renderVariantRow(variant)}
           </MenuItem>
         ))}
       </>

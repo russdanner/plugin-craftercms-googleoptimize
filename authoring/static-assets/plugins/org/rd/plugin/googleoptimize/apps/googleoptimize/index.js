@@ -8,7 +8,9 @@ const Divider = craftercms.libs.MaterialUI.Divider && Object.prototype.hasOwnPro
 const MenuList = craftercms.libs.MaterialUI.MenuList && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.MenuList, 'default') ? craftercms.libs.MaterialUI.MenuList['default'] : craftercms.libs.MaterialUI.MenuList;
 const MenuItem = craftercms.libs.MaterialUI.MenuItem && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.MenuItem, 'default') ? craftercms.libs.MaterialUI.MenuItem['default'] : craftercms.libs.MaterialUI.MenuItem;
 const Menu = craftercms.libs.MaterialUI.Menu && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Menu, 'default') ? craftercms.libs.MaterialUI.Menu['default'] : craftercms.libs.MaterialUI.Menu;
+const ListItemIcon = craftercms.libs.MaterialUI.ListItemIcon && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.ListItemIcon, 'default') ? craftercms.libs.MaterialUI.ListItemIcon['default'] : craftercms.libs.MaterialUI.ListItemIcon;
 const ListItemText = craftercms.libs.MaterialUI.ListItemText && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.ListItemText, 'default') ? craftercms.libs.MaterialUI.ListItemText['default'] : craftercms.libs.MaterialUI.ListItemText;
+const CheckRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CheckRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CheckRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CheckRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CheckRounded');
 const { get } = craftercms.utils.ajax;
 const { createAction } = craftercms.libs.ReduxToolkit;
 
@@ -97,12 +99,12 @@ function OptimizeToolbarStatus(props) {
                 var pageExperiments = [];
                 Object.values(configuredExperiments).map(function (exp, idx) {
                     // @ts-ignore
-                    if (exp.url === pageUrl) {
+                    if (exp.url === pageUrl.split('?')[0]) {
                         pageExperiments.push(exp);
                     }
                     else {
                         // @ts-ignore
-                        console.log('pageUrl ' + pageUrl + ' != ' + exp.url);
+                        console.log('pageUrl ' + pageUrl.split('?')[0] + ' != ' + exp.url);
                     }
                 });
                 setExperiments(pageExperiments);
@@ -128,12 +130,23 @@ function OptimizeToolbarStatus(props) {
     var handleClose = function () {
         setAnchorEl(null);
     };
+    function renderVariantRow(variant) {
+        var curUri = window.location.href;
+        if (curUri.indexOf(variant.params) != -1) {
+            return (React.createElement(React.Fragment, null,
+                React.createElement(ListItemIcon, null,
+                    React.createElement(CheckRoundedIcon, null)),
+                variant.label));
+        }
+        else {
+            return React.createElement(ListItemText, { inset: true }, variant.label);
+        }
+    }
     function renderVariantMenuItems(experiment) {
         var _a;
         return (React.createElement(React.Fragment, null, (_a = experiment.variants) === null || _a === void 0 ? void 0 : _a.map(function (variant, idx) { return (React.createElement(MenuItem, { onClick: function () {
-                dispatch(changeCurrentUrl(internalUrl + "?" + variant.params));
-            } },
-            React.createElement(ListItemText, { inset: true }, variant.label))); })));
+                dispatch(changeCurrentUrl(internalUrl.split("?")[0] + '?' + variant.params));
+            } }, renderVariantRow(variant))); })));
     }
     return (React.createElement(React.Fragment, null,
         React.createElement(Tooltip, { title: 'Google Optimize' },

@@ -83,7 +83,7 @@ function OptimizeToolbarStatus(props) {
     var _c = useState(currentUrlPath), internalUrl = _c[0], setInternalUrl = _c[1];
     var _d = React.useState(false), isFetching = _d[0], setIsFetching = _d[1];
     var _e = React.useState(0), experimentCount = _e[0], setExperimentCount = _e[1];
-    var _f = useState((Array)), experiments = _f[0], setExperiments = _f[1];
+    var _f = useState(), experiments = _f[0], setExperiments = _f[1];
     var loadExperimentData = function () {
         var serviceUrl = "".concat(PLUGIN_SERVICE_BASE, "/experiments/list.json?siteId=").concat(siteId);
         setIsFetching(true);
@@ -130,24 +130,7 @@ function OptimizeToolbarStatus(props) {
     var handleClose = function () {
         setAnchorEl(null);
     };
-    function renderVariantRow(variant) {
-        var curUri = window.location.href;
-        if (curUri.indexOf(variant.params) != -1) {
-            return (React.createElement(React.Fragment, null,
-                React.createElement(ListItemIcon, null,
-                    React.createElement(CheckRoundedIcon, null)),
-                variant.label));
-        }
-        else {
-            return React.createElement(ListItemText, { inset: true }, variant.label);
-        }
-    }
-    function renderVariantMenuItems(experiment) {
-        var _a;
-        return (React.createElement(React.Fragment, null, (_a = experiment.variants) === null || _a === void 0 ? void 0 : _a.map(function (variant, idx) { return (React.createElement(MenuItem, { onClick: function () {
-                dispatch(changeCurrentUrl(internalUrl.split("?")[0] + '?' + variant.params));
-            } }, renderVariantRow(variant))); })));
-    }
+    var curUri = window.location.href;
     return (React.createElement(React.Fragment, null,
         React.createElement(Tooltip, { title: 'Google Optimize' },
             React.createElement(Badge, { badgeContent: experimentCount > 0 ? experimentCount : null, color: "primary", overlap: "circular", style: { position: 'relative' } },
@@ -162,12 +145,20 @@ function OptimizeToolbarStatus(props) {
                 horizontal: 'left'
             } },
             React.createElement(MenuList, { dense: true, sx: { width: 320 } }, experiments === null || experiments === void 0 ? void 0 :
-                experiments.map(function (exp, idx) { return (React.createElement(React.Fragment, null,
-                    React.createElement(MenuItem, null,
-                        React.createElement(ListItemText, null,
-                            React.createElement(Link, { href: "{exp.googleOptimizeUrl}", target: "new" },
-                                React.createElement("strong", null, exp.label)))),
-                    renderVariantMenuItems(exp))); }),
+                experiments.map(function (exp, idx) {
+                    var _a;
+                    return (React.createElement(React.Fragment, null,
+                        React.createElement(MenuItem, null,
+                            React.createElement(ListItemText, null,
+                                React.createElement(Link, { href: exp.googleOptimizeUrl, target: "new" },
+                                    React.createElement("strong", null, exp.label)))), (_a = exp.variants) === null || _a === void 0 ? void 0 :
+                        _a.map(function (variant, idx) { return (React.createElement(MenuItem, { onClick: function () {
+                                dispatch(changeCurrentUrl(internalUrl.split('?')[0] + '?' + variant.params));
+                            } },
+                            React.createElement(ListItemIcon, null,
+                                React.createElement(CheckRoundedIcon, { sx: { visibility: curUri.includes(variant.params) ? '' : 'hidden' } })),
+                            React.createElement(ListItemText, null, variant.label))); })));
+                }),
                 React.createElement(Divider, null),
                 React.createElement(MenuItem, null,
                     React.createElement(ListItemText, null,

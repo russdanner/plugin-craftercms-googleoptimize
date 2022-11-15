@@ -39,7 +39,14 @@ export function OptimizeToolbarStatus(props) {
 
   const [isFetching, setIsFetching] = React.useState<Boolean>(false);
   const [experimentCount, setExperimentCount] = React.useState<number>(0);
-  const [experiments, setExperiments] = useState(Array<{ label: string; url: string }>);
+  const [experiments, setExperiments] = useState<
+    Array<{
+      label: string;
+      url: string;
+      googleOptimizeUrl: string;
+      variants: Array<{ label: string; params: string }>;
+    }>
+  >();
 
   const loadExperimentData = () => {
     let serviceUrl = `${PLUGIN_SERVICE_BASE}/experiments/list.json?siteId=${siteId}`;
@@ -98,37 +105,7 @@ export function OptimizeToolbarStatus(props) {
     setAnchorEl(null);
   };
 
-  function renderVariantRow(variant) {
-    let curUri = window.location.href;
-
-    if (curUri.indexOf(variant.params) != -1) {
-      return (
-        <>
-          <ListItemIcon>
-            <CheckRoundedIcon />
-          </ListItemIcon>{variant.label}
-        </>
-      );
-    } else {
-      return <ListItemText inset>{variant.label}</ListItemText>;
-    }
-  }
-
-  function renderVariantMenuItems(experiment) {
-    return (
-      <>
-        {experiment.variants?.map((variant, idx) => (
-          <MenuItem
-            onClick={() => {
-              dispatch(changeCurrentUrl(internalUrl.split("?")[0] + '?' + variant.params));
-            }}
-          >
-            {renderVariantRow(variant)}
-          </MenuItem>
-        ))}
-      </>
-    );
-  }
+  let curUri = window.location.href;
 
   return (
     <>
@@ -181,13 +158,24 @@ export function OptimizeToolbarStatus(props) {
             <>
               <MenuItem>
                 <ListItemText>
-                  <Link href="{exp.googleOptimizeUrl}" target="new">
+                  <Link href={exp.googleOptimizeUrl} target="new">
                     <strong>{exp.label}</strong>
                   </Link>
                 </ListItemText>
               </MenuItem>
 
-              {renderVariantMenuItems(exp)}
+              {exp.variants?.map((variant, idx) => (
+                <MenuItem
+                  onClick={() => {
+                    dispatch(changeCurrentUrl(internalUrl.split('?')[0] + '?' + variant.params));
+                  }}
+                >
+                  <ListItemIcon>
+                    <CheckRoundedIcon sx={{ visibility: curUri.includes(variant.params) ? '' : 'hidden' }} />
+                  </ListItemIcon>
+                  <ListItemText>{variant.label}</ListItemText>
+                </MenuItem>
+              ))}
             </>
           ))}
 

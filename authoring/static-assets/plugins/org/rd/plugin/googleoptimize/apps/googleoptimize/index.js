@@ -153,7 +153,10 @@ function OptimizeToolbarStatus(props) {
                                 React.createElement(Link, { href: exp.googleOptimizeUrl, target: "new" },
                                     React.createElement("strong", null, exp.label)))), (_a = exp.variants) === null || _a === void 0 ? void 0 :
                         _a.map(function (variant, idx) { return (React.createElement(MenuItem, { onClick: function () {
-                                dispatch(changeCurrentUrl(internalUrl.split('?')[0] + '?' + variant.params));
+                                //GAX1.1.YMbsowm2RMyHMZlgiTDZrg.19349.1
+                                document.cookie = "_gaexp=GAX1.1.YMbsowm2RMyHMZlgiTDZrg.19349." + variant.gaexp + ";path=/";
+                                var redirectUrl = internalUrl.split('?')[0] + '?' + variant.params;
+                                dispatch(changeCurrentUrl(redirectUrl));
                             } },
                             React.createElement(ListItemIcon, null,
                                 React.createElement(CheckRoundedIcon, { sx: { visibility: curUri.includes(variant.params) ? '' : 'hidden' } })),

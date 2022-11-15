@@ -44,7 +44,7 @@ export function OptimizeToolbarStatus(props) {
       label: string;
       url: string;
       googleOptimizeUrl: string;
-      variants: Array<{ label: string; params: string }>;
+      variants: Array<{ label: string; params: string, gaexp: string }>;
     }>
   >();
 
@@ -166,8 +166,10 @@ export function OptimizeToolbarStatus(props) {
 
               {exp.variants?.map((variant, idx) => (
                 <MenuItem
-                  onClick={() => {
-                    dispatch(changeCurrentUrl(internalUrl.split('?')[0] + '?' + variant.params));
+                  onClick={() => {  
+                    document.cookie = "_gaexp=GAX1.1.YMbsowm2RMyHMZlgiTDZrg.19349."+variant.gaexp+";path=/";
+                    let redirectUrl = internalUrl.split('?')[0] + '?' + variant.params                    
+                    dispatch(changeCurrentUrl(redirectUrl));
                   }}
                 >
                   <ListItemIcon>
